@@ -42,6 +42,15 @@ export class SubscriptionsController {
 
   // ─── Admin plan management (x-admin-api-key) ───────────────────────────────
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.SUPER_ADMIN)
+  @Get('plans/all')
+  @ApiOperation({ summary: 'List all plans including inactive (super admin only)' })
+  getAllPlans() {
+    return this.subscriptionsService.getAllPlans();
+  }
+
   @Public()
   @UseGuards(AdminApiKeyGuard)
   @Post('plans')
@@ -65,6 +74,15 @@ export class SubscriptionsController {
   @ApiOperation({ summary: 'Deactivate a pricing plan (admin only)' })
   deactivatePlan(@Param('id') id: string) {
     return this.subscriptionsService.deactivatePlan(id);
+  }
+
+  @Public()
+  @UseGuards(AdminApiKeyGuard)
+  @Patch('plans/:id/activate')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reactivate a pricing plan (admin only)' })
+  activatePlan(@Param('id') id: string) {
+    return this.subscriptionsService.activatePlan(id);
   }
 
   // ─── Authenticated ─────────────────────────────────────────────────────────

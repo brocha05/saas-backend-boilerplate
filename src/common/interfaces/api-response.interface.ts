@@ -1,13 +1,5 @@
-export interface PaginationMeta {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
-
 export interface ResponseMeta {
   requestId: string;
-  pagination?: PaginationMeta;
 }
 
 export interface SuccessApiResponse<T = unknown> {
@@ -34,5 +26,5 @@ export interface PaginatedServiceResponse<T = unknown> {
   total: number;
   page: number;
   limit: number;
-  pages: number; // UsersService uses "pages" — normalized to "totalPages" in meta
+  pages: number;
 }

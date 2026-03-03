@@ -7,13 +7,23 @@ export class AdminService {
 
   // ─── Companies ─────────────────────────────────────────────────────────────
 
-  async getCompanies(page: number, limit: number) {
+  async getCompanies(page: number, limit: number, search?: string) {
     const skip = (page - 1) * limit;
+
+    const where = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' as const } },
+            { slug: { contains: search, mode: 'insensitive' as const } },
+          ],
+        }
+      : {};
 
     const [companies, total] = await Promise.all([
       this.prisma.company.findMany({
         skip,
         take: limit,
+        where,
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
@@ -36,21 +46,21 @@ export class AdminService {
           },
         },
       }),
-      this.prisma.company.count(),
+      this.prisma.company.count({ where }),
     ]);
 
     return {
       data: companies.map((c) => ({
         ...c,
         userCount: c._count.users,
-        activeSubscription: c.subscriptions[0] ?? null,
+        subscription: c.subscriptions[0] ?? null,
         _count: undefined,
         subscriptions: undefined,
       })),
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit),
+      pages: Math.ceil(total / limit),
     };
   }
 
@@ -160,7 +170,7 @@ export class AdminService {
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit),
+      pages: Math.ceil(total / limit),
     };
   }
 }
