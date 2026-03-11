@@ -20,9 +20,9 @@ import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as bcrypt from 'bcrypt';
 
-import { AuthService } from './auth.service';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CacheService } from '../../infrastructure/cache/cache.service';
+import { AuthService } from '../../../src/modules/auth/auth.service';
+import { PrismaService } from '../../../src/prisma/prisma.service';
+import { CacheService } from '../../../src/infrastructure/cache/cache.service';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
